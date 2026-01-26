@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M2next | Мафия 2 по сети</title>
+    <meta
+      name="description"
+      content="Стань частью семьи в Эмпайр-Бэй. Здесь верность — это валюта, а омерта — закон. На чьей стороне ты?"
+    />
+    <meta
+      name="keywords"
+      content="игра про мафию, Mafia 2, Online, онлайн, Мафия игра, Вито Скалетта, ретро автомобили, криминал, ганстеры, омерта, Джо Барбаро, Joe Barbaro, Vito Scaletta"
+    />
+
+    <!-- Open Graph / Facebook / Telegram / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://m2next.ru" />
+    <meta property="og:title" content="M2next | Мафия 2 по сети" />
+    <meta
+      property="og:description"
+      content="Стань частью семьи в Эмпайр-Бэй. Здесь верность — это валюта, а омерта — закон. На чьей стороне ты?"
+    />
+    <!-- Ссылка на изображение-превью (рекомендуемый размер 1200x630px) -->
+    <meta property="og:image" content="https://m2next.ru/images/preview.jpg" />
+    <meta property="og:site_name" content="M2next | Мафия 2 по сети" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://m2next.ru" />
+    <meta name="twitter:title" content="M2next | Мафия 2 по сети" />
+    <meta
+      name="twitter:description"
+      content="Стань частью семьи в Эмпайр-Бэй. Здесь верность — это валюта, а омерта — закон. На чьей стороне ты?"
+    />
+    <meta name="twitter:image" content="https://m2next.ru/images/preview.jpg" />
+
+    <!-- Цветовая тема браузера (Chrome, Android 2026) -->
+    <meta name="theme-color" content="#050505" />
+
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
+
+    <link href="https://fonts.googleapis.com" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-dark: #0d0d0f;
+        --accent: #aa0d01;
+        --accent-glow: rgba(170, 13, 1, 0.4);
+        --glass: rgba(255, 255, 255, 0.03);
+        --glass-border: rgba(255, 255, 255, 0.07);
+        --text-main: #f0f0f2;
+        --text-dim: #949499;
+        --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        outline: none;
+      }
+
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Эффект шума на весь экран */
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('images/noise.png');
+        opacity: 0.15;
+        pointer-events: none;
+        z-index: 50;
+      }
+
+      /* --- HERO SECTION --- */
+
+      .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 0 10%;
+        position: relative;
+        overflow: hidden;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background-color: var(--bg-dark);
+      }
+
+      :root {
+        --bg-img: url('images/bg1.jpg'); /* Начальное значение */
+      }
+
+      /* Создаем два слоя для плавного перехода */
+      .hero-bg::before,
+      .hero-bg::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-image:
+          linear-gradient(to right, var(--bg-dark) 20%, transparent 80%),
+          linear-gradient(to top, var(--bg-dark), transparent 40%),
+          var(--bg-img);
+        transition: opacity 2s ease-in-out;
+      }
+
+      /* Слой 'after' будет плавно появляться поверх 'before' */
+      .hero-bg::after {
+        background-image:
+          linear-gradient(to right, var(--bg-dark) 20%, transparent 80%),
+          linear-gradient(to top, var(--bg-dark), transparent 40%),
+          var(--bg-next-img);
+        opacity: 0;
+      }
+
+      .hero-bg.is-changing::after {
+        opacity: 1;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        z-index: 2;
+        user-select: none;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-left: 3px solid var(--accent);
+        font-family: 'Space Mono', monospace;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 25px;
+      }
+
+      .hero h1 {
+        font-size: clamp(3.5rem, 9vw, 7.5rem);
+        font-weight: 900;
+        line-height: 0.85;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        letter-spacing: -2px;
+        margin-left: -7px;
+      }
+
+      .hero h1 span {
+        color: var(--accent);
+        display: block;
+      }
+
+      .hero-content p {
+        font-size: 1.2rem;
+        color: var(--text-dim);
+        max-width: 550px;
+        margin-bottom: 45px;
+        line-height: 1.6;
+      }
+
+      /* --- BUTTONS --- */
+      .btn-group {
+        display: flex;
+        gap: 20px;
+      }
+
+      .btn {
+        padding: 18px 22px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-decoration: none;
+        transition: var(--transition);
+        position: relative;
+        -webkit-user-drag: none;
+      }
+
+      .btn-main {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 10px 30px var(--accent-glow);
+      }
+
+      .btn-main:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px var(--accent-glow);
+        background: #cc1002;
+      }
+
+      .btn-outline {
+        border: 1px solid var(--glass-border);
+        color: white;
+        background: var(--glass);
+        backdrop-filter: blur(5px);
+      }
+
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+      }
+
+      /* --- FOOTER --- */
+      footer {
+        border-top: 1px solid var(--glass-border);
+        text-align: center;
+        position: fixed;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+      }
+
+      .footer-logo {
+        font-family: 'Cinzel', serif;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+
+      footer .copyright {
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        letter-spacing: 1.5px;
+        opacity: 0.5;
+        user-select: none;
+      }
+
+      @media (max-width: 1024px) {
+        .details {
+          grid-template-columns: 1fr;
+          gap: 50px;
+        }
+        .stats-bar {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 4rem;
+        }
+        .btn-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-badge">Статус: в разработке</div>
+        <h1>M2<br />Next<span style="display: inline">.</span></h1>
+        <p>
+          Мы переосмыслили многопользовательский опыт Mafia 2. Вса ожидает Новая
+          Эра криминального мира Америки.
+          <br />
+          Подписывайтесь на наши соц.сети.<br />Всё самое интересное только
+          начинается.
+        </p>
+        <div class="btn-group">
+          <a
+            target="_blank"
+            href="https://discord.gg/5BuX2dJTbQ"
+            class="btn btn-main"
+            >Discord</a
+          >
+          <a target="_blank" href="https://t.me/m2next" class="btn btn-outline"
+            >Telegram</a
+          >
+          <a
+            target="_blank"
+            href="https://www.youtube.com/@m2next-ru"
+            class="btn btn-outline"
+            >Youtube</a
+          >
+          <a
+            target="_blank"
+            href="https://vk.com/m2ncrp"
+            class="btn btn-outline"
+            >VK</a
+          >
+          <a
+            target="_blank"
+            href="https://boosty.to/m2next"
+            class="btn btn-outline"
+            >Boosty</a
+          >
+        </div>
+      </div>
+      <footer>
+        <p class="copyright">
+          Copyright © 2026 M2next. Not affiliated with 2K or Take-Two.
+        </p>
+      </footer>
+    </section>
+
+    <script>
+      (function () {
+        document.addEventListener('contextmenu', (event) =>
+          event.preventDefault(),
+        );
+
+        document.addEventListener('copy', (event) => event.preventDefault());
+
+        document.onkeydown = function (e) {
+          if (
+            e.keyCode == 123 ||
+            (e.ctrlKey &&
+              e.shiftKey &&
+              (e.keyCode == 'I'.charCodeAt(0) ||
+                e.keyCode == 'J'.charCodeAt(0))) ||
+            (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))
+          ) {
+            return false;
+          }
+        };
+
+        document.querySelector('.hero-badge').textContent =
+          `Статус на ${new Date().toLocaleDateString('ru-RU')}: в разработке`;
+
+        let img = 0;
+        const images = [
+          'images/bg1.jpg',
+          'images/bg2.jpg',
+          'images/bg3.jpg',
+          'images/bg4.jpg',
+          'images/bg5.jpg',
+        ];
+
+        function changeBg() {
+          const heroBg = document.querySelector('.hero-bg');
+
+          if (heroBg.classList.contains('is-changing')) return;
+
+          const nextImgIndex = (img + 1) % images.length;
+
+          heroBg.style.setProperty('--bg-img', `url(${images[img]})`);
+          heroBg.style.setProperty(
+            '--bg-next-img',
+            `url(${images[nextImgIndex]})`,
+          );
+
+          heroBg.classList.add('is-changing');
+
+          setTimeout(() => {
+            img = nextImgIndex;
+            heroBg.style.setProperty('--bg-img', `url(${images[img]})`);
+            heroBg.classList.remove('is-changing');
+          }, 2000); // Время должно совпадать с transition в CSS
+        }
+
+        const interval = setInterval(changeBg, 6000);
+      })();
+    </script>
+  </body>
+</html>
