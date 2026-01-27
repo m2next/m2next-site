@@ -202,6 +202,7 @@
       }
 
       .btn-main {
+        border: 1px solid transparent;
         background: var(--accent);
         color: white;
         box-shadow: 0 10px 30px var(--accent-glow);
@@ -261,6 +262,17 @@
       }
 
       @media (max-width: 768px) {
+        .hero {
+          height: 100%;
+          overflow: auto;
+          padding: 10% 10%;
+        }
+
+        .hero p {
+          backdrop-filter: blur(15px);
+          color: white;
+          padding: 2% 0;
+        }
         .hero h1 {
           font-size: 4rem;
         }
@@ -283,7 +295,7 @@
           Подписывайтесь на наши соц.сети.<br />Всё самое интересное только
           начинается.
         </p>
-        <div class="btn-group">
+        <div class="btn-group social">
           <a
             target="_blank"
             href="https://discord.gg/5BuX2dJTbQ"
@@ -353,6 +365,24 @@
           'images/bg5.jpg',
         ];
 
+        function changeButton() {
+          const buttons = [...document.querySelector('.social').children];
+          const currentIndex = buttons.findIndex((btn) =>
+            btn.classList.contains('btn-main'),
+          );
+          const nextIndex = (currentIndex + 1) % buttons.length;
+
+          buttons.forEach((btn, i) => {
+            if (i === nextIndex) {
+              btn.classList.replace('btn-outline', 'btn-main');
+              btn.classList.add('btn-main'); // На случай, если классов не было
+            } else {
+              btn.classList.replace('btn-main', 'btn-outline');
+              btn.classList.add('btn-outline');
+            }
+          });
+        }
+
         function changeBg() {
           const heroBg = document.querySelector('.hero-bg');
 
@@ -375,7 +405,10 @@
           }, 2000); // Время должно совпадать с transition в CSS
         }
 
-        const interval = setInterval(changeBg, 6000);
+        const interval = setInterval(() => {
+          changeBg();
+          changeButton();
+        }, 6000);
       })();
     </script>
   </body>
