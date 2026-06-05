@@ -56,6 +56,8 @@
         --text-main: #f0f0f2;
         --text-dim: #949499;
         --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        --content-max: 800px;
+        --content-pad: 10%;
       }
 
       * {
@@ -65,12 +67,24 @@
         outline: none;
       }
 
+      html {
+        overflow-x: clip;
+      }
+
       body {
         background-color: var(--bg-dark);
         color: var(--text-main);
         font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
+        overflow-x: clip;
+        max-width: 100%;
+        user-select: none;
         -webkit-font-smoothing: antialiased;
+      }
+
+      img,
+      svg {
+        max-width: 100%;
+        height: auto;
       }
 
       /* Эффект шума на весь экран */
@@ -90,14 +104,27 @@
       /* --- HERO SECTION --- */
 
       .hero {
+        min-height: 100vh;
         height: 100vh;
         display: flex;
         align-items: center;
-        padding: 0 10%;
+        padding: 0 var(--content-pad);
         position: relative;
         overflow: hidden;
         background-size: cover;
         background-position: center;
+      }
+
+      .hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 140px;
+        background: linear-gradient(to top, var(--bg-dark), transparent);
+        z-index: 2;
+        pointer-events: none;
       }
 
       .hero-bg {
@@ -140,23 +167,68 @@
       }
 
       .hero-content {
-        max-width: 800px;
+        max-width: var(--content-max);
+        width: 100%;
+        min-width: 0;
         z-index: 2;
-        user-select: none;
       }
 
       .hero-badge {
         display: inline-flex;
         align-items: center;
-        padding: 8px 16px;
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        border-left: 3px solid var(--accent);
-        font-family: 'Space Mono', monospace;
-        font-size: 0.7rem;
+        gap: 10px;
+        padding: 10px 18px;
+        background: rgba(170, 13, 1, 0.05);
+        border: 1px solid rgba(170, 13, 1, 0.3);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-size: 0.85rem;
+        font-weight: 600;
         text-transform: uppercase;
+        letter-spacing: 2.5px;
+        color: #fff;
+        margin-bottom: 30px;
+        box-shadow:
+          0 0 20px rgba(170, 13, 1, 0.15),
+          inset 0 0 12px rgba(170, 13, 1, 0.1);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-badge span {
+        color: #aaa;
         letter-spacing: 2px;
-        margin-bottom: 25px;
+      }
+      .hero-badge::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: #ff3b30;
+        border-radius: 50%;
+        box-shadow:
+          0 0 10px #ff3b30,
+          0 0 20px #ff3b30;
+        animation: pulse-dot 2s infinite ease-in-out;
+      }
+
+      @keyframes pulse-dot {
+        0% {
+          transform: scale(0.9);
+          opacity: 0.6;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+          box-shadow:
+            0 0 14px #ff3b30,
+            0 0 25px #ff3b30;
+        }
+        100% {
+          transform: scale(0.9);
+          opacity: 0.6;
+        }
       }
 
       .hero-content p {
@@ -210,14 +282,66 @@
         border-color: white;
       }
 
+      /* --- ИНДИКАТОР ПРОКРУТКИ --- */
+      .scroll-hint {
+        position: absolute;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-dim);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2.5px;
+        opacity: 0.7;
+        animation: scroll-hint-fade 3s ease-in-out infinite;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .scroll-hint::after {
+        content: '';
+        width: 1px;
+        height: 36px;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.5),
+          transparent
+        );
+        animation: scroll-hint-line 2s ease-in-out infinite;
+      }
+
+      @keyframes scroll-hint-fade {
+        0%,
+        100% {
+          opacity: 0.45;
+        }
+        50% {
+          opacity: 0.85;
+        }
+      }
+
+      @keyframes scroll-hint-line {
+        0%,
+        100% {
+          transform: scaleY(0.6);
+          opacity: 0.4;
+        }
+        50% {
+          transform: scaleY(1);
+          opacity: 1;
+        }
+      }
+
       /* --- FOOTER --- */
       footer {
         text-align: center;
-        position: fixed;
-        bottom: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1;
+        padding: 40px 10% 30px;
       }
 
       .footer-logo {
@@ -241,25 +365,327 @@
       }
 
       @media (max-width: 768px) {
-        .hero {
-          height: 100%;
-          overflow: auto;
-          padding: 10% 10%;
+        :root {
+          --content-pad: 16px;
         }
 
-        .hero p {
+        .hero {
+          min-height: 100dvh;
+          height: auto;
+          align-items: flex-start;
+          justify-content: center;
+          overflow: hidden;
+          padding: max(20px, env(safe-area-inset-top)) 16px
+            max(72px, calc(56px + env(safe-area-inset-bottom)));
+        }
+
+        .hero-content {
+          padding-bottom: 8px;
+        }
+
+        .hero-badge {
+          flex-wrap: wrap;
+          max-width: 100%;
+          font-size: 0.75rem;
+          letter-spacing: 1.5px;
+          padding: 8px 14px;
+          margin-bottom: 20px;
+        }
+
+        .hero-content p {
+          font-size: 0.95rem;
+          margin-bottom: 24px;
+          max-width: 100%;
           backdrop-filter: blur(15px);
           color: white;
-          padding: 2% 0;
+          padding: 0;
         }
 
         .logo-wrapper {
-          margin-bottom: 15px;
+          margin-bottom: 12px;
+          width: min(100%, 18rem);
         }
 
         .btn-group {
           flex-direction: column;
+          gap: 10px;
+          width: 100%;
         }
+
+        .btn {
+          width: 100%;
+          text-align: center;
+          padding: 14px 16px;
+          font-size: 0.75rem;
+          letter-spacing: 1.5px;
+        }
+
+        .scroll-hint {
+          bottom: max(12px, env(safe-area-inset-bottom));
+          font-size: 0.55rem;
+          letter-spacing: 2px;
+          gap: 6px;
+        }
+
+        .scroll-hint::after {
+          height: 24px;
+        }
+
+        .comparison-section {
+          padding: 48px 16px 40px;
+        }
+
+        .comparison-header {
+          margin-bottom: 24px;
+        }
+
+        .comparison-eyebrow {
+          font-size: 0.75rem;
+          letter-spacing: 2px;
+        }
+
+        .comparison-lead {
+          font-size: 0.95rem;
+        }
+
+        .cta-play {
+          flex-direction: column;
+          align-items: stretch;
+          text-align: center;
+          gap: 16px;
+          margin-top: 28px;
+        }
+
+        .cta-text {
+          font-size: 0.95rem;
+        }
+
+        .cta-btn {
+          text-align: center;
+          width: 100%;
+        }
+
+        footer {
+          padding: 32px 16px 24px;
+        }
+      }
+
+      /* --- СРАВНИТЕЛЬНАЯ ТАБЛИЦА --- */
+      .comparison-section {
+        position: relative;
+        z-index: 2;
+        padding: 80px var(--content-pad) 60px;
+        background: var(--bg-dark);
+      }
+
+      .comparison-inner {
+        width: 100%;
+      }
+
+      .comparison-header {
+        margin-bottom: 36px;
+      }
+
+      .comparison-eyebrow {
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--text-dim);
+        margin-bottom: 12px;
+      }
+
+      .comparison-title {
+        font-size: clamp(1.25rem, 2.5vw, 1.9rem);
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 12px;
+        line-height: 1.3;
+      }
+
+      .comparison-lead {
+        font-size: 1.05rem;
+        color: var(--text-dim);
+        line-height: 1.6;
+      }
+
+      .comparison-container {
+        width: 100%;
+        min-width: 0;
+        overflow-x: clip;
+      }
+
+      .comp-table {
+        width: 100%;
+        max-width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        background: transparent;
+        border: none;
+      }
+
+      .comp-table th,
+      .comp-table td {
+        padding: 20px 12px;
+        text-align: left;
+        font-size: 1.05rem;
+        line-height: 1.5;
+        border: none;
+        vertical-align: top;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+
+      .comp-table thead th {
+        padding-bottom: 16px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--text-dim);
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .comp-table th:nth-child(2),
+      .comp-table th:nth-child(3) {
+        width: 32%;
+      }
+
+      .comp-table tbody td {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .comp-table tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .comp-table td:first-child {
+        font-weight: 500;
+        color: var(--text-dim);
+        font-size: 1rem;
+        letter-spacing: 0.02em;
+        width: 28%;
+        padding-right: 24px;
+      }
+
+      .comp-table td:nth-child(2),
+      .comp-table td:nth-child(3) {
+        color: var(--text-main);
+      }
+
+      .comp-table tbody tr:hover td {
+        color: #ffffff;
+      }
+
+      .comp-table tbody tr:hover td:first-child {
+        color: #c8c8cc;
+      }
+
+      @media (max-width: 768px) {
+        .comp-table {
+          display: block;
+        }
+
+        .comp-table thead {
+          display: none;
+        }
+
+        .comp-table tbody {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .comp-table tbody tr {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          background: var(--glass);
+          border: 1px solid var(--glass-border);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+
+        .comp-table tbody tr:hover td:first-child {
+          color: var(--text-dim);
+        }
+
+        .comp-table tbody tr:hover td:nth-child(2),
+        .comp-table tbody tr:hover td:nth-child(3) {
+          color: #ffffff;
+        }
+
+        .comp-table tbody td {
+          border-bottom: none;
+        }
+
+        .comp-table tbody td:first-child {
+          grid-column: 1 / -1;
+          width: 100%;
+          padding: 10px 14px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          color: var(--text-dim);
+          background: rgba(255, 255, 255, 0.04);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .comp-table tbody td:nth-child(2),
+        .comp-table tbody td:nth-child(3) {
+          padding: 12px 14px 14px;
+          font-size: 0.85rem;
+          line-height: 1.45;
+        }
+
+        .comp-table tbody td:nth-child(2) {
+          border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .comp-table tbody td:nth-child(2)::before,
+        .comp-table tbody td:nth-child(3)::before {
+          display: block;
+          margin-bottom: 6px;
+          font-size: 0.65rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.2px;
+          color: var(--text-dim);
+        }
+
+        .comp-table tbody td:nth-child(2)::before {
+          content: 'm2next';
+        }
+
+        .comp-table tbody td:nth-child(3)::before {
+          content: 'NCRP';
+        }
+      }
+
+      /* --- CTA NCRP --- */
+      .cta-play {
+        margin-top: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .cta-text {
+        font-size: 1.1rem;
+        color: var(--text-dim);
+        font-weight: 500;
+        line-height: 1.6;
+      }
+
+      .cta-text strong {
+        color: #ffffff;
+        font-weight: 700;
+      }
+
+      .cta-btn {
+        flex-shrink: 0;
       }
 
       footer .copyright {
@@ -337,12 +763,111 @@
           >
         </div>
       </div>
-      <footer>
-        <p class="copyright">
-          Copyright © 2026 M2next. Not affiliated with 2K or Take-Two.
-        </p>
-      </footer>
+
+      <div class="scroll-hint" aria-hidden="true">Детали</div>
     </section>
+
+    <section class="comparison-section">
+      <div class="comparison-inner">
+        <header class="comparison-header">
+          <p class="comparison-eyebrow">Сравнение проектов</p>
+          <h2 class="comparison-title">m2next и NCRP</h2>
+          <p class="comparison-lead">
+            Эволюция против классики.<br />m2next делает мощный рывок вперед,
+            пока NCRP предлагает стабильную игру прямо сейчас.
+          </p>
+        </header>
+
+        <div class="comparison-container">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>m2next</th>
+                <th>NCRP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Синхронизация</td>
+                <td>Возможны улучшения</td>
+                <td>Приемлемая</td>
+              </tr>
+              <tr>
+                <td>Интерфейс</td>
+                <td>Насыщенный WEB</td>
+                <td>Скудный GUI</td>
+              </tr>
+              <tr>
+                <td>Лаунчер</td>
+                <td>Полностью новый</td>
+                <td>Текущий</td>
+              </tr>
+              <tr>
+                <td>Карта</td>
+                <td>Вместе с дамбой из DLC</td>
+                <td>Как в одиночной игре</td>
+              </tr>
+              <tr>
+                <td>Интерьеры</td>
+                <td>Максимально из доступных</td>
+                <td>Чуть меньше, чем в одиночной игре</td>
+              </tr>
+              <tr>
+                <td>Экономика</td>
+                <td>Приближенная к реальности</td>
+                <td>Казуальная</td>
+              </tr>
+              <tr>
+                <td>Механики криминала</td>
+                <td>Явные</td>
+                <td>Слабые</td>
+              </tr>
+              <tr>
+                <td>Автомобили</td>
+                <td>70+ моделей</td>
+                <td>~60 моделей</td>
+              </tr>
+              <tr>
+                <td>Фракции и работы</td>
+                <td>Уникальные и настраиваемые</td>
+                <td>Базовые</td>
+              </tr>
+              <tr>
+                <td>Дома и бизнесы</td>
+                <td>Расширенный набор</td>
+                <td>Ограниченный набор</td>
+              </tr>
+              <tr>
+                <td>Статус</td>
+                <td>Ведётся разработка</td>
+                <td>Работает</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cta-play">
+          <p class="cta-text">
+            Хотите <strong>поиграть прямо сейчас</strong>?<br />Пока m2next
+            разрабатывается, заходите на сервер NCRP - он работает.
+          </p>
+          <a
+            href="https://ncrp.m2next.ru/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-outline cta-btn"
+            >Перейти в NCRP</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p class="copyright">
+        Copyright © 2026 M2next. Not affiliated with 2K or Take-Two.
+      </p>
+    </footer>
 
     <script>
       (function () {
@@ -365,8 +890,13 @@
           }
         };
 
-        document.querySelector('.hero-badge').textContent =
-          `Статус на ${new Date().toLocaleDateString('ru-RU')}: в разработке`;
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const formattedDate = new Date()
+          .toLocaleDateString('ru-RU', options)
+          .replace(' г.', '');
+
+        document.querySelector('.hero-badge').innerHTML =
+          `<span>${formattedDate}:</span> ведётся разработка`;
 
         let img = 0;
         const images = [
